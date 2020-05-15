@@ -26,6 +26,8 @@ function prepareForMobile(){
 
 }
 
+
+
 function newgame(){
     //初始化游戏
     init();
@@ -144,24 +146,28 @@ function generateOneNumber(){
 $(document).keydown(function( event ){
     switch(event.keyCode){
         case 37: // left
+            event.preventDefault();
             if( moveLeft()){
                 setTimeout("generateOneNumber()",210) ;
                 setTimeout("isgameover()",300);
             }
             break;
         case 38: //up
+            event.preventDefault();
             if( moveUp() ){
                 setTimeout("generateOneNumber()",210) ;
                 setTimeout("isgameover()",300);
             }
             break;
         case 39: //right
+            event.preventDefault();
             if( moveRight() ){
                 setTimeout("generateOneNumber()",210) ;
                 setTimeout("isgameover()",300);
             }
             break;
         case 40: //down
+            event.preventDefault();
             if( moveDown() ){
                 setTimeout("generateOneNumber()",210) ;
                 setTimeout("isgameover()",300);
@@ -171,6 +177,58 @@ $(document).keydown(function( event ){
             break;
     }
 })
+
+//增加触控
+document.addEventListener('touchstart',function(){
+    startx = event.touches[0].pageX;
+    starty = event.touches[0].pageY;
+    console.log(event.touches)
+})
+
+
+document.addEventListener('touchend',function(){
+    endx = event.changedTouches[0].pageX;
+    endy = event.changedTouches[0].pageY;
+    console.log(event.changedTouches)
+
+    let deltax = endx - startx;
+    let deltay = endy - starty;
+    if(Math.abs( deltax ) < 0.3 * documentWidth && Math.abs( deltay ) < 0.3 * documentWidth )
+        return;
+
+    // x轴
+    if( Math.abs( deltax ) >= Math.abs( deltay )){
+        if( deltax > 0 ){ //
+            //move right
+            if( moveRight() ){
+                setTimeout("generateOneNumber()",210) ;
+                setTimeout("isgameover()",300);
+            }
+        }else{
+            // move left
+            if( moveLeft()){
+                setTimeout("generateOneNumber()",210) ;
+                setTimeout("isgameover()",300);
+            }
+        }
+    }else { // y轴
+        if ( deltay > 0 ){
+            // move down
+            if( moveDown() ){
+                setTimeout("generateOneNumber()",210) ;
+                setTimeout("isgameover()",300);
+            }
+        }else {
+            //move up
+            if( moveUp() ){
+                setTimeout("generateOneNumber()",210) ;
+                setTimeout("isgameover()",300);
+            }
+        }
+    }
+})
+
+
 
 function isgameover(){
     if( nospace( board ) && nomove( board )){
